@@ -12,6 +12,8 @@ import KnowledgeGraphPage from "../pages/graph/KnowledgeGraphPage";
 import Analytics from "../pages/analytics/Analytics";
 import Activity from "../pages/activity/Activity";
 import Settings from "../pages/settings/Settings";
+import ProfileSettings from "../components/settings/ProfileSettings";
+import PlanSettings from "../components/settings/PlanSettings";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +63,16 @@ const router = createBrowserRouter([
       {
         path: "/dashboard/settings",
         element: <Settings />,
+        children: [
+          {
+            path: "profile",
+            element: <ProfileSettings />,
+          },
+          {
+            path: "plan",
+            element: <PlanSettings />,
+          },
+        ],
       },
     ],
   },
