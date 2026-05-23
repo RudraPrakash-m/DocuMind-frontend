@@ -6,7 +6,7 @@ const Settings = () => {
   const settingsLinks = [
     {
       name: "Profile",
-      path: "profile",
+      path: "",
       icon: User,
     },
     {
