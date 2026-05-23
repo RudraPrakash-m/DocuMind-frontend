@@ -8,9 +8,11 @@ import SearchModal from "../search/SearchModal";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { SignedIn, UserButton, useUser } from "@clerk/clerk-react";
+import UploadModal from "../documents/UploadModal";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
   const navigate = useNavigate();
 
   const { user } = useUser();
@@ -34,6 +36,7 @@ const Navbar = () => {
       // ESC Close
       if (e.key === "Escape") {
         setIsOpen(false);
+        setIsUploadOpen(false);
       }
     };
 
@@ -67,7 +70,10 @@ const Navbar = () => {
           {/* RIGHT */}
           <div className="flex items-center gap-4">
             {/* Upload Button */}
-            <button className="flex items-center gap-2 rounded-2xl bg-blue-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-400">
+            <button
+              onClick={() => setIsUploadOpen(true)}
+              className="flex items-center gap-2 rounded-2xl bg-blue-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-400"
+            >
               <Upload size={18} />
               Upload
             </button>
@@ -84,13 +90,13 @@ const Navbar = () => {
                 <UserButton afterSignOutUrl="/" />
               </div>
             </SignedIn>
-            
           </div>
         </div>
       </header>
 
       {/* SEARCH MODAL */}
       <SearchModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      {isUploadOpen && <UploadModal setIsUploadOpen={setIsUploadOpen} />}
     </>
   );
 };
