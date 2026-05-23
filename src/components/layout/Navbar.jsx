@@ -139,7 +139,21 @@ const Navbar = () => {
       <SearchModal isOpen={isOpen} setIsOpen={setIsOpen} />
 
       {/* UPLOAD MODAL */}
-      {isUploadOpen && <UploadModal setIsUploadOpen={setIsUploadOpen} />}
+      {isUploadOpen && (
+        <UploadModal
+          setIsUploadOpen={setIsUploadOpen}
+          workspaces={[
+            {
+              _id: "687ab2938f1d2e8a7c912345",
+              name: "Finance",
+            },
+            {
+              _id: "687ab2938f1d2e8a7c912346",
+              name: "Development",
+            },
+          ]}
+        />
+      )}
     </>
   );
 };

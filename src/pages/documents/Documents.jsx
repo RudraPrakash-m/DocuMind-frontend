@@ -25,7 +25,21 @@ const Documents = () => {
       <DocumentViewer selectedDocument={selectedDocument} />
 
       {/* Upload Modal */}
-      {isUploadOpen && <UploadModal setIsUploadOpen={setIsUploadOpen} />}
+      {isUploadOpen && (
+        <UploadModal
+          setIsUploadOpen={setIsUploadOpen}
+          workspaces={[
+            {
+              _id: "687ab2938f1d2e8a7c912345",
+              name: "Finance",
+            },
+            {
+              _id: "687ab2938f1d2e8a7c912346",
+              name: "Development",
+            },
+          ]}
+        />
+      )}
     </div>
   );
 };
