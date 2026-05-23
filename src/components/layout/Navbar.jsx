@@ -123,7 +123,7 @@ const Navbar = () => {
                 >
                   <UserButton.MenuItems>
                     <UserButton.Action
-                      label="Logout"
+                      label="Sign Out"
                       labelIcon="🚪"
                       onClick={handleLogout}
                     />
