@@ -4,9 +4,11 @@ import {
   SignedIn,
   ClerkLoaded,
   ClerkLoading,
+  useUser,
 } from "@clerk/clerk-react";
 
 import { dark } from "@clerk/themes";
+import { useEffect } from "react";
 
 import { Navigate } from "react-router-dom";
 

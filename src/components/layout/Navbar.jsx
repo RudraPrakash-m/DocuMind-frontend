@@ -4,29 +4,52 @@ import { Bell, Upload } from "lucide-react";
 
 import GlobalSearch from "../search/GlobalSearch";
 import SearchModal from "../search/SearchModal";
-
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { SignedIn, UserButton, useUser } from "@clerk/clerk-react";
 import UploadModal from "../documents/UploadModal";
+
+import { useNavigate } from "react-router-dom";
+
+import { SignedIn, UserButton, useUser, useClerk } from "@clerk/clerk-react";
+
+import axios from "axios";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const { user } = useUser();
 
-  // console.log(user);
+  const { signOut } = useClerk();
 
-  const { logout } = useAuth();
+  // Logout
+  const handleLogout = async () => {
+    try {
+      // Clear backend cookie
+      await axios.post(
+        "http://localhost:8080/public/logout",
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+
+      // Clerk logout
+      await signOut();
+
+      // Redirect
+      navigate("/");
+    } catch (error) {
+      console.log("Logout Error:", error);
+    }
+  };
 
   // Keyboard Shortcut
   useEffect(() => {
     const handleKeyDown = (e) => {
       // CMD + K (Mac)
       // CTRL + K (Windows)
-
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
 
@@ -36,6 +59,7 @@ const Navbar = () => {
       // ESC Close
       if (e.key === "Escape") {
         setIsOpen(false);
+
         setIsUploadOpen(false);
       }
     };
@@ -77,6 +101,7 @@ const Navbar = () => {
               <Upload size={18} />
               Upload
             </button>
+
             {/* Notification */}
             <button className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-950 text-zinc-300 transition hover:bg-zinc-900">
               <Bell size={18} />
@@ -84,10 +109,26 @@ const Navbar = () => {
               {/* Notification Dot */}
               <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-blue-500" />
             </button>
-            {/* profile */}
+
+            {/* PROFILE */}
             <SignedIn>
-              <div className="flex flex-col items-center gap-4">
-                <UserButton afterSignOutUrl="/" />
+              <div className="flex items-center gap-4">
+                {/* Clerk User */}
+                <UserButton
+                  appearance={{
+                    elements: {
+                      userButtonPopoverActionButton__signOut: "hidden",
+                    },
+                  }}
+                >
+                  <UserButton.MenuItems>
+                    <UserButton.Action
+                      label="Logout"
+                      labelIcon="🚪"
+                      onClick={handleLogout}
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
               </div>
             </SignedIn>
           </div>
@@ -96,6 +137,8 @@ const Navbar = () => {
 
       {/* SEARCH MODAL */}
       <SearchModal isOpen={isOpen} setIsOpen={setIsOpen} />
+
+      {/* UPLOAD MODAL */}
       {isUploadOpen && <UploadModal setIsUploadOpen={setIsUploadOpen} />}
     </>
   );
