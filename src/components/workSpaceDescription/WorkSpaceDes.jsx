@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 
-const WorkSpaceDes = () => {
+const WorkSpaceDes = ({ setShowWorkspaceForm }) => {
   return (
     <div className="mb-10 flex items-center justify-between">
       {/* Left */}
@@ -15,7 +15,10 @@ const WorkSpaceDes = () => {
       </div>
 
       {/* Right */}
-      <button className="flex items-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-medium text-white transition-all hover:bg-blue-400">
+      <button
+        onClick={() => setShowWorkspaceForm(true)}
+        className="flex items-center gap-2 rounded-xl bg-blue-500 px-5 py-3 text-sm font-medium text-white transition-all hover:bg-blue-400"
+      >
         <Plus size={18} />
         New Workspace
       </button>

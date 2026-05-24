@@ -17,6 +17,8 @@ const Navbar = () => {
 
   const [isUploadOpen, setIsUploadOpen] = useState(false);
 
+  const [workspaces, setWorkspaces] = useState([]);
+
   const navigate = useNavigate();
 
   const { user } = useUser();
@@ -44,6 +46,25 @@ const Navbar = () => {
       console.log("Logout Error:", error);
     }
   };
+
+  const fetchWorkspaces = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/user/workspaces/all",
+        {
+          withCredentials: true,
+        },
+      );
+
+      setWorkspaces(response.data.workspaces);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkspaces();
+  }, []);
 
   // Keyboard Shortcut
   useEffect(() => {
@@ -142,16 +163,7 @@ const Navbar = () => {
       {isUploadOpen && (
         <UploadModal
           setIsUploadOpen={setIsUploadOpen}
-          workspaces={[
-            {
-              _id: "687ab2938f1d2e8a7c912345",
-              name: "Finance",
-            },
-            {
-              _id: "687ab2938f1d2e8a7c912346",
-              name: "Development",
-            },
-          ]}
+          workspaces={workspaces}
         />
       )}
     </>

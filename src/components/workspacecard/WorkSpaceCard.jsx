@@ -1,8 +1,6 @@
 import { FileText, MoreHorizontal, Users } from "lucide-react";
 
-const WorkSpaceCard = ({ group }) => {
-  const totalDocs = group.documents?.length || 0;
-
+const WorkSpaceCard = ({ group, totalDocs }) => {
   const totalMembers = group.members?.length || 0;
 
   return (
@@ -77,10 +75,10 @@ const WorkSpaceCard = ({ group }) => {
         <div className="flex -space-x-2">
           {group.members?.slice(0, 4).map((member) => (
             <div
-              key={member.id}
+              key={member._id}
               className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-zinc-950 bg-gradient-to-br from-blue-500 to-indigo-500 text-xs font-semibold text-white"
             >
-              {member.name.charAt(0)}
+              {member.user?.name?.charAt(0) || "U"}
             </div>
           ))}
         </div>
