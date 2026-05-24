@@ -1,57 +1,37 @@
-import MarkdownViewer from "./MarkdownViewer";
-import PdfViewer from "./PdfViewer";
+import { useEffect, useState } from "react";
 
-const DocumentViewer = ({
-  selectedDocument,
-}) => {
+import ReactMarkdown from "react-markdown";
 
-  if (!selectedDocument) {
+const MarkdownViewer = ({ fileUrl }) => {
+  const [content, setContent] = useState("");
 
-    return (
-      <div className="flex h-[80vh] items-center justify-center rounded-3xl border border-dashed border-zinc-800 bg-zinc-950">
+  /*
+    Fetch Markdown File
+  */
 
-        <p className="text-zinc-500">
-          Select a document
-        </p>
+  useEffect(() => {
+    const fetchMarkdown = async () => {
+      try {
+        const response = await fetch(fileUrl);
 
-      </div>
-    );
-  }
+        const text = await response.text();
+
+        setContent(text);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (fileUrl) {
+      fetchMarkdown();
+    }
+  }, [fileUrl]);
 
   return (
-    <div className="rounded-3xl border border-zinc-800 bg-zinc-950 p-5">
-
-      {/* Header */}
-      <div className="mb-5 border-b border-zinc-800 pb-4">
-
-        <h1 className="text-2xl font-semibold text-white">
-          {selectedDocument.title}
-        </h1>
-
-      </div>
-
-      {/* Viewer */}
-      {selectedDocument.type ===
-      "pdf" ? (
-
-        <PdfViewer
-          fileUrl={
-            selectedDocument.fileUrl
-          }
-        />
-
-      ) : (
-
-        <MarkdownViewer
-          content={
-            selectedDocument.content
-          }
-        />
-
-      )}
-
+    <div className="prose prose-invert max-w-none">
+      <ReactMarkdown>{content}</ReactMarkdown>
     </div>
   );
 };
 
-export default DocumentViewer;
+export default MarkdownViewer;

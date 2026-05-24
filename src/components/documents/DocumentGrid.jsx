@@ -1,60 +1,74 @@
+import { useEffect, useState } from "react";
+
+import axios from "axios";
+
 import DocumentCard from "./DocumentCard";
 
-const DocumentGrid = ({
-  selectedDocument,
-  setSelectedDocument,
-}) => {
+const DocumentGrid = ({ selectedDocument, setSelectedDocument }) => {
+  /*
+    States
+  */
 
-  const documents = [
-    {
-      id: 1,
-      title: "Investor Memo.pdf",
-      type: "pdf",
+  const [documents, setDocuments] = useState([]);
 
-      tags: [
-        "finance",
-        "investors",
-      ],
+  const [loading, setLoading] = useState(true);
 
-      content:
-        "Revenue increased 32% YoY.",
+  /*
+    Fetch Documents
+  */
 
-      fileUrl: "/sample.pdf",
-    },
+  const getDocuments = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/user/documents",
 
-    {
-      id: 2,
-      title: "Architecture.md",
-      type: "markdown",
+        {
+          withCredentials: true,
+        },
+      );
 
-      tags: [
-        "engineering",
-        "backend",
-      ],
+      setDocuments(response.data.documents);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      content:
-        "# System Architecture\n\nThis system uses MERN stack.",
-    },
-  ];
+  /*
+    Initial Fetch
+  */
+
+  useEffect(() => {
+    getDocuments();
+  }, []);
+
+  /*
+    Loading State
+  */
+
+  if (loading) {
+    return <h1 className="text-zinc-400">Loading documents...</h1>;
+  }
+
+  /*
+    Empty State
+  */
+
+  if (documents.length === 0) {
+    return <h1 className="text-zinc-500">No documents uploaded</h1>;
+  }
 
   return (
     <div className="space-y-4">
-
       {documents.map((document) => (
-
         <DocumentCard
-          key={document.id}
+          key={document._id}
           document={document}
-          selectedDocument={
-            selectedDocument
-          }
-          setSelectedDocument={
-            setSelectedDocument
-          }
+          selectedDocument={selectedDocument}
+          setSelectedDocument={setSelectedDocument}
         />
-
       ))}
-
     </div>
   );
 };

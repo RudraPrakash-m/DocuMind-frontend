@@ -1,10 +1,18 @@
 import { useState } from "react";
+
 import DocumentToolbar from "../../components/documents/DocumentToolbar";
+
 import DocumentGrid from "../../components/documents/DocumentGrid";
-import DocumentViewer from "../../components/documents/MarkdownViewer";
+
+
 import UploadModal from "../../components/documents/UploadModal";
+import DocumentViewer from "../../components/documents/DocumentViewer";
 
 const Documents = () => {
+  /*
+    States
+  */
+
   const [selectedDocument, setSelectedDocument] = useState(null);
 
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -31,10 +39,13 @@ const Documents = () => {
           workspaces={[
             {
               _id: "687ab2938f1d2e8a7c912345",
+
               name: "Finance",
             },
+
             {
               _id: "687ab2938f1d2e8a7c912346",
+
               name: "Development",
             },
           ]}
