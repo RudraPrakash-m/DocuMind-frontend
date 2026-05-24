@@ -1,42 +1,109 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+
 import axios from "axios";
 
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useAuth } from "@clerk/clerk-react";
 
 const Dashboard = () => {
-  const { user } = useUser();
+  /*
+    CLERK USER
+  */
+
+  const { user, isLoaded } = useUser();
+
+  /*
+    GET CLERK TOKEN
+  */
+
+  const { getToken } = useAuth();
+
+  /*
+    PREVENT MULTIPLE API CALLS
+  */
+
+  const synced = useRef(false);
 
   useEffect(() => {
     const syncUser = async () => {
-      if (!user) return;
-
-      // Unique key per user
-      const syncKey = `synced_${user.id}`;
-
-      const alreadySynced = sessionStorage.getItem(syncKey);
-
-      if (alreadySynced) return;
-
       try {
-        const res = await axios.post("http://localhost:8080/public/register", {
-          clerkId: user.id,
-          name: user.fullName,
-          email: user.primaryEmailAddress?.emailAddress,
-        });
+        /*
+          WAIT FOR CLERK LOAD
+        */
 
-        console.log("Backend Response:", res.data);
+        if (!isLoaded || !user || synced.current) {
+          return;
+        }
 
-        // Save per-user sync
-        sessionStorage.setItem(syncKey, "true");
+        synced.current = true;
+
+        /*
+          GET VERIFIED CLERK TOKEN
+        */
+
+        const clerkToken = await getToken();
+
+        // console.log("CLERK TOKEN:", clerkToken);
+
+        /*
+          TOKEN CHECK
+        */
+
+        if (!clerkToken) {
+          console.log("No Clerk Token Found");
+
+          return;
+        }
+
+        /*
+          SEND TOKEN TO BACKEND
+        */
+
+        const res = await axios.post(
+          "http://localhost:8080/public/register",
+
+          {},
+
+          {
+            headers: {
+              Authorization: `Bearer ${clerkToken}`,
+            },
+
+            withCredentials: true,
+          },
+        );
+
+        // console.log("Backend Response:", res.data);
       } catch (error) {
-        console.error("Error syncing user:", error);
+        console.error("Sync Error:", error.response?.data || error.message);
       }
     };
 
     syncUser();
-  }, [user]);
+  }, [user, isLoaded, getToken]);
 
-  return <div className="text-white text-2xl">Dashboard</div>;
+  /*
+    LOADING STATE
+  */
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex justify-center items-center text-white text-xl">
+        Loading...
+      </div>
+    );
+  }
+
+  /*
+    UI
+  */
+
+  return (
+    <div className="min-h-screen flex justify-center items-center bg-[#212126]">
+      <h1 className="text-white text-3xl font-semibold">
+        Welcome {user?.fullName}
+      </h1>
+    </div>
+  );
 };
 
 export default Dashboard;
